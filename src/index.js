@@ -30,7 +30,6 @@ app.post('/users', (request, response) => {
   const existsUsers = users.some(user => user.username === username)
 
   if(existsUsers){
-    console.log(existsUsers)
     return response.status(400).json({error: "User already exists"})
   }
 
@@ -87,19 +86,32 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
   const { username } = request
   const { id } = request.params
 
-  const hasTodoById = username.todos.find(todo => todo.id === id )
+  const existsTodoById = username.todos.find(todo => todo.id === id )
 
-  if(!hasTodoById){
+  if(!existsTodoById){
     return response.status(404).json({error: "Todo not found"})
   }
 
-  hasTodoById.done = true
+  existsTodoById.done = true
 
-  return response.status(200).json(hasTodoById)
+  return response.status(200).json(existsTodoById)
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { username } = request
+  const { id } = request.params
+
+  const existsTodoById = username.todos.find(todo => todo.id === id)
+
+  if(!existsTodoById){
+    console.log(existsTodoById)
+    return response.status(404).json({error: "Todo not found"})
+  }
+
+  username.todos.splice(existsTodoById, 1)
+
+  return response.status(204).send()
+
 });
 
 module.exports = app;
