@@ -84,7 +84,18 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { username } = request
+  const { id } = request.params
+
+  const hasTodoById = username.todos.find(todo => todo.id === id )
+
+  if(!hasTodoById){
+    return response.status(404).json({error: "Todo not found"})
+  }
+
+  hasTodoById.done = true
+
+  return response.status(200).json(hasTodoById)
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
